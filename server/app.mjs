@@ -6,8 +6,14 @@ const port = 4001;
 
 app.use(express.json());
 
-app.get("/assignments", (req, res) => {
-  return res.json("Server API is working 🚀");
+app.get("/assignments", async (req, res) => {
+  try {
+    const result = await connectionPool.query(`SELECT * FROM assignments`);
+    return res.status(200).json(result.rows);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: "Database connection" });
+  }
 });
 
 app.post("/assignments", async (req, res) => {
